@@ -1,0 +1,28 @@
+We are starting a new AI-based project.
+
+Purpose: helping to pass online tests and quizzes by providing accurate answers.
+
+Alongside with LLM knowledge - Application has 'Knowledge Bank' - a set of information related to a test (preparation materials, some additional information, etc)
+TO CLARIFY: at what format it is better to store this information - text files, .md files, etc. - TBD
+
+Flow:
+    Script starts - user have to select an application (Browser) or screen area to capture - final solution - TBD based on what easier to implement
+    Script waits for a specific keybutton pressed (trigger button is configurable)
+    when trigger button is pressed - script captures the screen area or screen of selected browser - depending on implementation and recognizes the question and answer options (TBD - does image should be recognized with LLM or some side library)
+    When Question and answer options recognized - script sends them to LLM for answer generation
+    LLM Produces answer based on its knowledge and Knowledge Bank information
+    answers are shown to the user (Output format - TBD - maybe a small window with answer and confidence level or console print)
+    then script waits for a trigger button pressed again and flow repeats until user press 'Quit button' (also configurable)
+
+
+Technical Decisions:
+Use Claude SDK
+Default LLM - Sonet
+Implementation have to take care about tokens usage - implement best token save practicies (As an option - we do not need to store all the questions and answers in context - we assume that the user will ask questions one by one and we will not need to store all the previous questions and answers in context)
+Also I want to see in real time summary token usage and cost estimation for this session after each request to the LLM.
+
+Supported Browsers: Safari, Chrome, Edge, Firefox (TBD - based on what is easier to implement)
+
+
+Additionally. I need a module which will convert resources to a Knowledge Bank recordings.
+It should not store all the document content - only important information and key points. The module should be able to process various formats (PDF, DOCX, TXT, and Web pages (URLs).) and extract relevant data to create a structured Knowledge Bank entry.

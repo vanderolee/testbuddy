@@ -1,0 +1,67 @@
+Critical Questions & Technical Decisions
+
+  1. Capture Strategy
+
+  - Window-specific capture (per browser) vs screen area selection? - A: What is easier to implement, I assume browser selection and capturing active open tab the easiest way, but it may be more complex to implement for multiple browsers. Screen area selection is simpler but less user-friendly.
+  - Should we support multiple monitors? - A: not for MVP, but may be useful for future versions.
+  - How to handle browser window switching (user may have multiple tabs)? A: If we go with browser selection decision - only active tab should be captured
+  - Capture rate limits to avoid excessive API calls? - A: I'm not sure what does it mean? Clarify
+
+  2. OCR/Recognition Approach
+
+  - Use Claude Vision API directly (sends image to LLM) vs separate OCR library (pytesseract, EasyOCR)? A: Lets start with OCR library for MVP, but we may want to switch to Vision API later for better accuracy.
+    - Vision API: More accurate for complex layouts, but uses more tokens
+    - OCR library: Faster, cheaper, but may struggle with formatting
+  - How to handle multiple-choice vs text-based answers vs images in questions?
+    A: Answer can have multiple options - in this case script should show all correct answers. For text-based answers it should generate text answer. Images should be skipped for MVP.
+  - Should we support mathematical formulas/equations (LaTeX)? A: For MVP, we can skip LaTeX support, but it may be useful for future versions.
+
+  3. Knowledge Bank Storage
+
+  - Format: JSON, SQLite, vector database (ChromaDB/FAISS), or plain markdown files? A: Provide me the best solution for MVP, but we may want to switch to a more advanced solution later. I need it to be fast for a search, because I dont want entire Knowledge Bank to be stored inside context and I expect Time-limited tests, so We dont have time for long searches.
+  - Search strategy: Full-text search, semantic search (embeddings), or keyword matching? A: This is for you to decide, thats Why I need you as a Solution Designer
+  - How to organize by test/subject/topic? - A: Knowledge bank will represent a list of text training materials for a specific test. They can we structured by topics.
+  - Maximum size per knowledge bank entry? A: Unlimited
+
+  4. Token & Cost Management
+
+  - Should we implement prompt caching for Knowledge Bank (Claude supports 5-min cache TTL)? - Not for MVP, lets stick to a meaningfull requests without unnecessary context
+  - Set hard limits on tokens per request? A: No
+  - Warning threshold before expensive operations? A: No
+  - How to handle Knowledge Bank that exceeds context window? A: Knowledge bank should never be fully loaded into context. Only relevant entries should be retrieved and sent to LLM for each question. Knowledge Bank its just a set of information in addition to an LLM knowledge.
+
+  5. Output & UX
+
+  - UI Framework: Tkinter, PyQt, or web-based (Electron/FastAPI)? A: Easiest way is good enough for MVP, I can work with cmd for MVP
+  - Show answer immediately or wait for confidence threshold?
+   A: Output rules:
+        I want next output:
+         -Only current question is shown - I dont want to see previous questions.
+         - All answers also shown in the same order the are captured from the browser.
+         - Next to an every answer option an icon - green check if answer is correct or red cross if its not (multiple answers possible)
+  - Allow user to rate answer quality for learning? - A: not for MVP
+  - Support for multiple answer suggestions with confidence scores? - A: I need only answers LLM consider correct, I dont need confidence score
+
+
+  6. Edge Cases & Constraints
+
+  - What happens if OCR fails or is low confidence? A: Retry
+  - How to handle time-limited tests (speed requirements)? A: Ideally I want every question to be processed in less than 15 seconds
+  - Offline mode support (local LLM fallback)? A: Not for MVP
+  - Privacy: Should captured images be logged or immediately discarded?
+        A: Lets save them for MVP for debug purposes. Every script run should create a separate folder  under 'runs' - folder name - full timestamp when of script start: YYYY_MM_DD_HH_MM_SS. Inside this folder - save all captured images, questions and answer options provided by LLM and logs. After script exit - user can delete this folder manually if he wants to.
+  - Rate limiting from Claude API - retry strategy? - Not for MVP, but we may want to implement it later if we see rate limiting issues.
+
+  7. Knowledge Bank Converter A: For all formats I expect only summarised information will be stored inside Knowledge Bank - I dont need full documents in it. Only key information and points.
+
+  - For PDFs: Extract text-only or preserve structure (tables, images)?
+  - For URLs: Full page scraping or main content extraction (readability)?
+  - Should we chunk large documents? What's the chunking strategy?
+  - How to detect and extract "key points" automatically (summarization)? - With LLM
+
+
+  8. Platform & Deployment - Its a python application, so it should be cross-platform, but I want to start with macOS for MVP.
+
+  - Target OS: macOS only, or cross-platform (Windows, Linux)?
+  - Browser automation: Native APIs or use Playwright/Selenium for capture?
+  - Hotkey library: pynput, keyboard, or platform-specific? A: Configured manually in config.py
