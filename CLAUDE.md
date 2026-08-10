@@ -8,11 +8,10 @@ TestBuddy is an AI-powered assistant for online tests and quizzes. It captures s
 
 **Key Components:**
 - Screen/browser capture module with hotkey trigger
-- OCR/image recognition for question extraction
-- Claude SDK integration (default: Sonnet model)
-- Knowledge Bank system for test-specific materials
-- Answer generation with confidence scoring
+- Claude Vision API for question extraction and answering
+- Claude SDK integration (Sonnet 4.6 model)
 - Token usage tracking and cost estimation
+- Knowledge Bank system (planned for future implementation)
 
 ## Development Setup
 
@@ -31,22 +30,23 @@ python main.py  # or python -m testbuddy
 
 ### Core Flow
 1. **Capture**: User selects browser/screen area, triggers capture via configurable hotkey
-2. **Recognition**: Extract question and answer options from captured image
-3. **Query**: Send to Claude with Knowledge Bank context
-4. **Display**: Show answer with confidence level to user
+2. **Vision Processing**: Send screenshot directly to Claude Vision API
+3. **Extraction & Analysis**: Claude extracts question, options, and provides answer (single API call)
+4. **Display**: Show answer with explanation to user
 5. **Repeat**: Wait for next trigger or quit command
 
 ### Key Design Decisions
 
+**Vision-Based Approach**: 
+- Send screenshots directly to Claude Vision API
+- Single API call extracts question, options, and provides answer
+- JSON schema enforcement for reliable structured output
+- No separate OCR library needed
+
 **Token Optimization**: 
 - Questions processed individually without persistent context history
-- Minimize conversation history to reduce token usage
 - Display real-time token count and cost after each request
-
-**Knowledge Bank**:
-- Store extracted key points, not full documents
-- Support formats: PDF, DOCX, TXT, URLs
-- Structure entries for efficient retrieval
+- Estimated ~3,200 input tokens per screenshot
 
 **Screen Capture**:
 - Target browsers: Safari, Chrome, Edge, Firefox
@@ -54,10 +54,11 @@ python main.py  # or python -m testbuddy
 
 ## Implementation Notes
 
-- Use Claude SDK with Sonnet as default model
+- Use Claude SDK with Sonnet 4.6 model (`claude-sonnet-4-6-20250805`)
+- Vision API with JSON schema for structured output
 - Implement token-saving best practices (no conversation history accumulation)
 - Track and display session token usage and cost estimation in real-time
-- Knowledge Bank module should extract and store only relevant information, not full content
+- Knowledge Bank planned for future implementation
 
 ## Testing
 

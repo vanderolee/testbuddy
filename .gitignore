@@ -99,10 +99,9 @@ dmypy.json
 *.bak
 *.orig
 
-# EasyOCR model cache (large files)
-.EasyOCR/
-
 # Backup files
 *~.nib
-*.bak
 *.backup
+
+# Debugging / temp directories
+fixes/
