@@ -91,7 +91,8 @@ class ClaudeClient:
                                 "description": "Full text of the option"
                             }
                         },
-                        "required": ["label", "text"]
+                        "required": ["label", "text"],
+                        "additionalProperties": False
                     },
                     "description": "Array of answer options"
                 },
@@ -107,23 +108,21 @@ class ClaudeClient:
                     "description": "Brief explanation of why the answer is correct"
                 }
             },
-            "required": ["question", "options", "correct_options", "explanation"]
+            "required": ["question", "options", "correct_options", "explanation"],
+            "additionalProperties": False
         }
 
         # Call Claude API with vision and structured output
         response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
-            temperature=self.temperature,
             messages=[
                 {"role": "user", "content": content}
             ],
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "test_answer",
-                    "strict": True,
-                    "schema": response_schema
+            output_config={
+                "format": {
+                    "type": "json_schema",
+                    "schema": response_schema,
                 }
             }
         )

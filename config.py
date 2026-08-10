@@ -19,11 +19,11 @@ CAPTURE_DELAY_MS = 5000                 # Wait after hotkey before capture
 TARGET_BROWSER = "Safari"              # "Safari", "Google Chrome", "Firefox", "Microsoft Edge"
 
 # LLM Settings
-MODEL = "claude-sonnet-4-6-20250805"   # Claude Sonnet 4.6
+MODEL = "claude-sonnet-5"
 MAX_TOKENS = 4096                      # Max response tokens
 TEMPERATURE = 0.3                      # Lower = more deterministic
 
-# Token Pricing (USD per million tokens) - Claude Sonnet 4.6
+# Token Pricing (USD per million tokens)
 INPUT_TOKEN_PRICE = 3.0
 OUTPUT_TOKEN_PRICE = 15.0
 
