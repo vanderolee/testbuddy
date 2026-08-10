@@ -78,30 +78,40 @@ def print_answer(question_data: Dict, answer_data: Dict) -> None:
         console.print(explanation)
 
 
-def print_token_summary(summary: dict, request_tokens: dict = None) -> None:
+def print_token_summary(summary: dict, request_data: dict = None) -> None:
     """
-    Print token usage summary.
+    Print token usage and timing summary.
 
     Args:
         summary: Session summary from TokenTracker.get_summary()
-        request_tokens: Optional current request token counts
+        request_data: Optional current request data (tokens + timing)
     """
     console.print("\n" + "═" * 80)
 
-    if request_tokens:
-        req_total = request_tokens.get('input_tokens', 0) + request_tokens.get('output_tokens', 0)
-        req_cost = (request_tokens.get('input_tokens', 0) / 1_000_000 * 3.0) + \
-                   (request_tokens.get('output_tokens', 0) / 1_000_000 * 15.0)
+    if request_data:
+        req_total = request_data.get('input_tokens', 0) + request_data.get('output_tokens', 0)
+        req_cost = (request_data.get('input_tokens', 0) / 1_000_000 * 3.0) + \
+                   (request_data.get('output_tokens', 0) / 1_000_000 * 15.0)
+        req_time = request_data.get('processing_time', 0.0)
 
         console.print(
-            f"[cyan]This Request:[/cyan] {req_total:,} tokens | ${req_cost:.4f}"
+            f"[cyan]This Request:[/cyan] {req_total:,} tokens | ${req_cost:.4f} | "
+            f"[yellow]{req_time:.2f}s[/yellow]"
         )
 
+    # Session totals
     console.print(
         f"[cyan]Session Total:[/cyan] {summary['total_tokens']:,} tokens | "
         f"${summary['total_cost']:.4f} | "
         f"{summary['requests']} requests"
     )
+
+    # Average timing
+    if summary.get('avg_processing_time', 0) > 0:
+        console.print(
+            f"[cyan]Avg Time:[/cyan] [yellow]{summary['avg_processing_time']:.2f}s[/yellow] per request"
+        )
+
     console.print("═" * 80)
 
 

@@ -110,10 +110,11 @@ class TestBuddy:
                 print_waiting_message(config.TRIGGER_HOTKEY, config.QUIT_HOTKEY)
                 return
 
-            # Track tokens
+            # Track tokens and timing
             self.tracker.add_request(
                 answer_data.get('input_tokens', 0),
-                answer_data.get('output_tokens', 0)
+                answer_data.get('output_tokens', 0),
+                answer_data.get('processing_time', 0.0)
             )
 
             # Save data
@@ -125,13 +126,14 @@ class TestBuddy:
 
             print_answer(question_data, answer_data)
 
-            # Show token summary
+            # Show token summary with timing
             summary = self.tracker.get_summary()
-            request_tokens = {
+            request_data = {
                 'input_tokens': answer_data.get('input_tokens', 0),
-                'output_tokens': answer_data.get('output_tokens', 0)
+                'output_tokens': answer_data.get('output_tokens', 0),
+                'processing_time': answer_data.get('processing_time', 0.0)
             }
-            print_token_summary(summary, request_tokens)
+            print_token_summary(summary, request_data)
 
             # Show waiting message
             print_waiting_message(config.TRIGGER_HOTKEY, config.QUIT_HOTKEY)
@@ -153,6 +155,9 @@ class TestBuddy:
         print(f"Session ended: {self.capture_count} questions processed")
         print(f"Total tokens: {summary['total_tokens']:,}")
         print(f"Total cost: ${summary['total_cost']:.4f}")
+        if summary['avg_processing_time'] > 0:
+            print(f"Average processing time: {summary['avg_processing_time']:.2f}s")
+            print(f"Total processing time: {summary['total_processing_time']:.2f}s")
         print(f"Session saved to: {self.run_folder}")
         print("=" * 80)
 

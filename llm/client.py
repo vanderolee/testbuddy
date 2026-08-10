@@ -3,6 +3,7 @@ Claude API client module.
 """
 import json
 import base64
+import time
 from pathlib import Path
 from typing import Dict, Optional
 from anthropic import Anthropic
@@ -112,7 +113,8 @@ class ClaudeClient:
             "additionalProperties": False
         }
 
-        # Call Claude API with vision and structured output
+        # Call Claude API with vision and structured output (with timing)
+        start_time = time.time()
         response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
@@ -126,6 +128,7 @@ class ClaudeClient:
                 }
             }
         )
+        processing_time = time.time() - start_time
 
         # Extract token usage
         input_tokens = response.usage.input_tokens
@@ -135,9 +138,10 @@ class ClaudeClient:
         response_text = response.content[0].text
         answer_data = json.loads(response_text)
 
-        # Add token usage
+        # Add token usage and timing
         answer_data["input_tokens"] = input_tokens
         answer_data["output_tokens"] = output_tokens
+        answer_data["processing_time"] = processing_time
 
         return answer_data
 

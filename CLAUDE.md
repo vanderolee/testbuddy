@@ -9,8 +9,9 @@ TestBuddy is an AI-powered assistant for online tests and quizzes. It captures s
 **Key Components:**
 - Screen/browser capture module with hotkey trigger
 - Claude Vision API for question extraction and answering
-- Claude SDK integration (Sonnet 4.6 model)
+- Claude SDK integration (Sonnet model)
 - Token usage tracking and cost estimation
+- Processing time tracking (per-question and session average)
 - Knowledge Bank system (planned for future implementation)
 
 ## Development Setup
